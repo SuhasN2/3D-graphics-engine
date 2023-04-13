@@ -1,0 +1,31 @@
+3D Object Viewer
+This is a Python program that displays a 3D object on a 2D screen. The program uses turtle graphics to create a window where the object is displayed. The object is defined by a list of vertices and a list of edges that connect the vertices.
+
+Getting Started
+To run this program, you need to have Python 3 and the turtle graphics library installed on your computer. To install turtle, run the following command:
+
+Copy code
+pip install turtle
+Once you have installed turtle, you can run the program by opening the terminal or command prompt, navigating to the directory where the program is saved, and running the following command:
+
+Copy code
+python3 3DObjectViewer.py
+User Interface
+When you run the program, a window will open that displays the 3D object. You can use the following commands to interact with the program:
+
+Use the mouse to rotate the camera around the object.
+Press the 'Up' and 'Down' arrow keys to zoom in and out.
+Press the 'Left' and 'Right' arrow keys to move the object left and right.
+Program Structure
+The program is structured as follows:
+
+The print_matrix function prints a matrix in a readable format.
+The pen_size, input_rotate, and focal_length functions get user inputs for the pen size, rotation angles, and focal length.
+The Vertex_3D and Edge_3D lists define the 3D object.
+The calculate_camera_rotations function calculates the camera rotations.
+The rotate function applies rotation matrices to the object vertices.
+The calculate_screen_vertex function calculates the 2D coordinates of a vertex.
+The draw_screen_edge function draws an edge on the screen.
+The program uses a loop to render the object on the screen.
+License
+This program is licensed under the MIT License. See the LICENSE file for details.
