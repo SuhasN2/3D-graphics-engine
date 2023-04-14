@@ -1,15 +1,15 @@
+# Importing required modules
 import turtle
 import numpy
 import time
 
-
-# Create turtle screen
+# Creating a turtle screen
 win = turtle.Screen()
 win.title("test")
 win.bgcolor("black")
 win.setup(width=800, height=500)
 
-# Create turtle pen
+# Creating a turtle pen
 pen = turtle.Turtle()
 pen.hideturtle()
 pen.shape("circle")
@@ -27,6 +27,25 @@ def print_matrix(matrix):
         print("|")
     print("----------------------")
 
+# Functions for camera movement
+def cam_up():
+    camera[1] = camera[1] + 5
+
+def cam_down():
+    camera[1] = camera[1] - 5
+
+def cam_right():
+    camera[0] = camera[0] + 5
+
+def cam_left():
+    camera[0] = camera[0] - 5
+
+def cam_zoom_in():
+    camera[2] = camera[2] + 5
+
+def cam_zoom_out():
+    camera[2] = camera[2] - 5
+
 # Functions to get user inputs
 def pen_size():
     return win.numinput("pen size", "Enter pen size (1-10):", default=2, minval=1, maxval=10)
@@ -38,7 +57,7 @@ def focal_length():
     FL = win.numinput("focal length", "Enter focal length (150-):", default=450, minval=150, maxval=1500)
     return FL
 
-# Define 3D object
+# Defining 3D object
 camera_position = [-150, 0, 50]
 
 Vertex_3D = [
@@ -78,7 +97,7 @@ Edge_3D = [
      [9,10]
 ]
 
-# Define camera
+# Defining camera
 camera = [0, 0, 0]
 
 # Functions to calculate camera rotations and screen vertex coordinates
@@ -141,67 +160,82 @@ def rotate_z(theta):
         [0, 0, 1]
     ])
 
+# input: calling functions to rotate along X, Y and Z axes
 X = input_rotate("X")
 Y = input_rotate("Y")
 Z = input_rotate("Z")
 
+# get focal length and pen size
 FL = focal_length()
 pen.pensize(pen_size())
 
-# render ---------------------------------------------------------------------------
-
+# render
+# turn off screen updates
 win.tracer(0)
 
-for frame in range(160):
+# loop through 250 frames
+for frame in range(250):
+    time.sleep(0.034) # add a slight delay between frames to make animation smoother
 
-    # The code calculates the 2D projection of a 3D object onto a camera's view plane by applying camera
-    #  rotaprelodetions to both the camera and the object, and then using the resulting transformation to calculate
-    #  the 2D coordinates of a vertex. The final 2D coordinates are assigned to the variable Vertex_2D
+    # listen for keyboard events
+    win.listen()
+    win.onkeypress(cam_up, "Up")
+    win.onkeypress(cam_down, "Down")
+    win.onkeypress(cam_left, "Left")
+    win.onkeypress(cam_right, "Right")
+    win.onkeypress(cam_zoom_in, "8")
+    win.onkeypress(cam_zoom_out, "2")
+
+    # calculate 2D projection of 3D object onto camera's view plane by applying camera rotations to both
+    # camera and object, and then use resulting transformation to calculate 2D coordinates of a vertex
+    Vertex_2D = calculate_camera_rotations(camera_position, calculate_camera_rotations(camera,rotate(Vertex_3D,X,Y,Z)))
     
-    Vertex_2D = calculate_camera_rotations(camera_position, calculate_camera_rotations(camera,rotate(Vertex_3D,X + (frame/128),Y,Z)))
-
+    # print vertex coordinates
     print(Vertex_2D)
-
+    # print matrix
     print_matrix(Vertex_2D)
     print()  
+    # print separator
     print("-------------------------------------------------------------------------------------------------------------")
+    # print table header
     print("           x1           |            y1            ||            x2           |           y2          ")
     print("-------------------------------------------------------------------------------------------------------------")
 
+    # create empty lists to store data
     preload_data_1 = []
     preload_data_2 = []
 
+    # loop through edge list
     for i in Edge_3D:
         v1 = Vertex_2D [i[0]]
         v2 = Vertex_2D [i[1]]
+        # calculate screen coordinates of vertices
         x1, y1 = calculate_screen_vertex(v1[0], v1[1], v1[2], FL)
         x2, y2 = calculate_screen_vertex(v2[0], v2[1], v2[2], FL)
+        # append coordinates to list
         list1 = [x1, y1]
         list2 = [x2, y2]
         preload_data_1.append(list1)
         preload_data_2.append(list2)
+        # clear temporary lists
         list1 = []
         list2 = []
-        # print (f"  {x1},   |    {y1},   ||    {x2},   |    {y2}   |")
-        # print ("-------------------------------------------------------------------------------------------------------------")
-        
 
+    # reset turtle and prepare for drawing
     pen.reset()
-
     pen.hideturtle()
     pen.shape("circle")
     pen.color("white", "blue")
     pen.speed(0)
     pen.penup()
 
+    # loop through edge list again and draw edges
     for oj in range(len(Edge_3D)):
-        draw_screen_edge (preload_data_1[oj][0] + (frame * 2), preload_data_1[oj][1]+ (2),preload_data_2[oj][0] + (frame * 2), preload_data_2[oj][1] + (2))
+        draw_screen_edge (preload_data_1[oj][0], preload_data_1[oj][1],preload_data_2[oj][0], preload_data_2[oj][1])
+
+    # update screen
     win.update()
-    
-
-
 
 # keep the turtle screen open until it is manually closed
-# Start the event loop
 print("#######################################################################################################")
 turtle.mainloop()
