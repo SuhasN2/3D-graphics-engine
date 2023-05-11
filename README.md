@@ -27,7 +27,7 @@ r: Rotate the object around the X-axis
 t: Rotate the object around the Y-axis
 y: Rotate the object around the Z-axis
 p: Change the pen size
-ESC: Exit the program
+e: Exit the program
 When you press r, t, or y, you will be prompted to enter a value between 0 and 360 to rotate the object around that axis.
 
 When you press p, you will be prompted to enter a value between 1 and 10 to change the pen size.
